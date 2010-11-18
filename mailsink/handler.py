@@ -1,5 +1,6 @@
 import email
 import rfc822
+import time
 
 from twisted.internet import defer, reactor
 from twisted.mail.smtp import IMessage, IMessageDelivery, IMessageDeliveryFactory
@@ -25,10 +26,11 @@ class Message:
         msg = email.message_from_string("\n".join(self._contents))
 
         self._sink.add({
-                  'to': msg.get('To', self._origin),
-                'from': msg.get('From', self._dest),
-             'subject': msg.get('Subject', None),
-                'body': msg.as_string(True)
+                   'to': msg.get('To', self._origin),
+                 'from': msg.get('From', self._dest),
+              'subject': msg.get('Subject', None),
+                 'body': msg.as_string(True),
+            'timestamp': time.strftime("%I:%M %p"),
         })
 
         d = defer.Deferred()
