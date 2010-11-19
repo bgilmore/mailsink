@@ -22,7 +22,7 @@ class Sink(object):
         self._subs.clear()
 
     def contents(self):
-        return [message for message in self._store if message is not None]
+        return [message for message in reversed(self._store) if message is not None]
 
     def __iter__(self):
         for i in xrange(len(self._store)):
