@@ -38,7 +38,8 @@ function initMessageList(messages) {
 
 
 function doResize(e) {
-  pos = Math.max(0, e.pageX);
+  w   = $(document).width();
+  pos = Math.max(0.25 * w, Math.min(0.50 * w, e.pageX));
 
   $('ul#messages').css('width', pos - 1);
   $('div#splitter').css('left', pos);
