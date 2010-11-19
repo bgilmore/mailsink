@@ -1,14 +1,55 @@
-function selectMessage() {
-  $('ul#messages li.selected').removeClass('selected');
-  $(this).addClass('selected');
+function squelch(e) {
+  e.preventDefault();
 }
+
+function killSelection(element) {
+  $(element).attr('selectable', false)
+            .css('user-select', 'none')
+            .css('-moz-user-select', 'none')
+            .css('-webkit-user-select', 'none');
+}
+
+function restoreSelection(element) {
+  $(element).attr('selectable', true)
+            .css('user-select', 'text')
+            .css('-moz-user-select', 'text')
+            .css('-webkit-user-select', 'text');
+}
+
+function doResize(e) {
+  w   = $(document).width();
+  pos = Math.max(0.25 * w, Math.min(0.50 * w, e.pageX));
+
+  $('ul#messages').css('width', pos - 1);
+  $('div#splitter').css('left', pos);
+  $('div#viewer').css('left', pos + 3);
+}
+
+function endResize(e) {
+  restoreSelection('div#viewer');
+  $(document).unbind('mousemove', doResize)
+             .unbind('mouseup', endResize);
+}
+
+function startResize(e) {
+  killSelection('div#viewer');
+  $(document).bind('mousemove', doResize)
+             .bind('mouseup', endResize);
+}
+
 
 function drawMessage(i, message) {
   row = $(document.createElement('li'));
-  row.append("<small>" + message.timestamp + "</small>");
-  row.append("<address>" + message.from + "</address>");
-  row.append("<cite>" + message.subject + "</cite>");
-  row.bind('click', selectMessage);
+  row.append("<small>" + message.timestamp + "</small>")
+     .append("<address>" + message.from + "</address>")
+     .append("<cite>" + message.subject + "</cite>")
+     .bind('click', function()
+      {
+        $('ul#messages li.selected').removeClass('selected');
+        $(this).addClass('selected');
+
+        $('div#viewer').empty().append($('<pre>').text(message.body));
+      });
 
   $('ul#messages').append(row);
 }
@@ -25,7 +66,9 @@ function poller() {
 
       poller();
     },
-    error: function(x) { console.log(x); }
+    error: function() { 
+      $('div#err').show();
+    }
   });
 }
 
@@ -37,28 +80,9 @@ function initMessageList(messages) {
 }
 
 
-function doResize(e) {
-  w   = $(document).width();
-  pos = Math.max(0.25 * w, Math.min(0.50 * w, e.pageX));
-
-  $('ul#messages').css('width', pos - 1);
-  $('div#splitter').css('left', pos);
-  $('div#viewer').css('left', pos + 3);
-}
-
-function endResize(e) {
-  $(document).unbind('mousemove', doResize)
-             .unbind('mouseup', endResize);
-}
-
-function startResize(e) {
-  $(document).bind('mousemove', doResize)
-             .bind('mouseup', endResize);
-}
-
-
 $(document).ready(function() {
   $('div#splitter').bind('mousedown', startResize);
+  killSelection('ul#messages');
 
   $.ajax({
     url: '/messages.json',

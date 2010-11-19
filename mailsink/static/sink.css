@@ -11,29 +11,6 @@ div#err {
     display: none;
 }
 
-div#viewer {
-    background: #eee;
-    overflow: auto;
-    margin: 0;
-
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 404px;
-}
-
-div#splitter {
-    background: #797979;
-    cursor: col-resize;
-    width: 3px;
-
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 401px;
-}
-
 ul#messages {
     background: #fefefe;
     border-right: 1px solid #aaa;
@@ -95,5 +72,35 @@ cite {
     text-overflow: ellipsis;
     width: 100%;
     white-space: nowrap;
+}
+
+div#splitter {
+    background: #797979;
+    cursor: col-resize;
+    width: 3px;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 401px;
+}
+
+div#viewer {
+    background: #eee;
+    border: 0;
+    display: block;
+    margin: 0;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 404px;
+}
+
+div#viewer pre {
+    margin: 0px;
+    padding: 12px;
+    font-size: 1.1em;
 }
 
