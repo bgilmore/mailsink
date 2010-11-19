@@ -11,23 +11,47 @@ div#err {
     display: none;
 }
 
+div#viewer {
+    background: #eee;
+    overflow: auto;
+    margin: 0;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 404px;
+}
+
+div#splitter {
+    background: #797979;
+    cursor: col-resize;
+    width: 3px;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 401px;
+}
+
 ul#messages {
     background: #fefefe;
-    overflow-y: scroll;
-    margin: 0;
-    padding: 0;
-
-    /* fill viewport vertically */
+    border-right: 1px solid #aaa;
     height: 100%;
-    height: auto !important;
-    min-height: 100%;
+    margin: 0;
+    overflow: auto;
+    padding: 0;
     width: 400px;
+
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
 }
 
 ul#messages li {
     border-bottom: 1px solid #ececec;
     cursor: pointer;
-
     list-style: none;
     overflow: hidden;
     padding: 0px;
@@ -47,7 +71,6 @@ ul#messages li.selected {
     background: #9cf;
     cursor: default !important;
 }
-
 
 small {
     display: block;
