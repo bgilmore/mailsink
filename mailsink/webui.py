@@ -40,14 +40,14 @@ class SinkStreamer(resource.Resource):
 
     def __init__(self, root):
         resource.Resource.__init__(self)
-        self._root = root
+        self._sink = root._sink
 
     def render_GET(self, request):
-        d = defer.Deferred().addCallback(self._update, request)
+        self._d = defer.Deferred().addCallback(self._update, request)
         timeout = reactor.callLater(10.0, self._timed_out, request)
-        self._root._sink.subscribe(d)
+        self._sink.subscribe(self._d)
 
-        request.notifyFinish().addBoth(self._finalize, d, timeout)
+        request.notifyFinish().addBoth(self._finalize, timeout)
         return server.NOT_DONE_YET
 
     def _update(self, message, request):
@@ -57,10 +57,15 @@ class SinkStreamer(resource.Resource):
 
     def _timed_out(self, request):
         # timed out with no activity
+        self._sink.unsub(self._d)
         request.setResponseCode(204, "No Content")
+
         request.finish()
         
-    def _finalize(self, _, d, timeout):
+    def _finalize(self, err, timeout):
+        if err is not None:
+            self._sink.unsub(self._d)
+
         if timeout.active():
             timeout.cancel()
 

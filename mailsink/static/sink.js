@@ -67,7 +67,8 @@ function poller() {
       poller();
     },
     error: function() { 
-      $('div#err').show();
+      $('div#err').text("Error: Lost connection to server")
+                  .fadeIn();
     }
   });
 }

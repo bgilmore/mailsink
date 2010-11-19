@@ -9,6 +9,20 @@ html, body {
 
 div#err {
     display: none;
+
+    background-color: #fef0f0;
+    border: 1px solid #c00;
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 15px;
+    text-align: center;
+    text-transform: uppercase;
+
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    left: 15px;
+    z-index: 1001;
 }
 
 ul#messages {
@@ -18,7 +32,7 @@ ul#messages {
     margin: 0;
     overflow: auto;
     padding: 0;
-    width: 400px;
+    width: 375px;
 
     position: absolute;
     top: 0px;
@@ -82,7 +96,7 @@ div#splitter {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 401px;
+    left: 376px;
 }
 
 div#viewer {
@@ -95,7 +109,7 @@ div#viewer {
     top: 0;
     right: 0;
     bottom: 0;
-    left: 404px;
+    left: 379px;
 }
 
 div#viewer pre {
