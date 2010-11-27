@@ -86,6 +86,7 @@ class SinkViewer(resource.Resource):
         'sink.css': static.File(resource_filename(__name__, 'static/sink.css')),
 
         # extra media
+        'jquery.js':   static.File(resource_filename(__name__, 'static/jquery-1.4.4.min.js')),
         'favicon.ico': static.File(resource_filename(__name__, 'static/mail16.ico')),
         'icon.png':    static.File(resource_filename(__name__, 'static/mail512.png')),
     }
