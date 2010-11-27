@@ -10,6 +10,15 @@ setup(
     maintainer = "Brandon Gilmore",
     maintainer_email = "brandon@mg2.org",
     license = "BSD",
+    classifiers = [
+        "Development Status :: 2 - Pre-Alpha",
+        "Environment :: Web Environment",
+        "Framework :: Twisted",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Topic :: Communications :: Email",
+        "Topic :: Software Development :: Testing",
+    ],
 
     platforms = "any",
     packages = [ "mailsink" ],
