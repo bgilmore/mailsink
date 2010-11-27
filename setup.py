@@ -1,10 +1,14 @@
+import os
 from setuptools import setup
 from mailsink import __version__
+
+src_root = os.path.dirname(__file__)
 
 setup(
     name = "mailsink",
     version = __version__,
     description = "a mock SMTP server",
+    long_description = file(os.path.join(src_root, "README.rst")).read(),
     url = "http://github.com/bgilmore/mailsink",
 
     maintainer = "Brandon Gilmore",
