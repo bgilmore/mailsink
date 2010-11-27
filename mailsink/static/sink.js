@@ -1,3 +1,23 @@
+var unreadMessages  = 0;
+var messageListener = null;
+
+function appBlur() {
+  messageListener = function() {
+    document.title = 'Mailsink (' + unreadMessages + ' new messages)';
+    if (window.fluid)
+      window.fluid.dockBadge = String(unreadMessages);
+  }
+}
+
+function appFocus() {
+  unreadMessages  = 0;
+  messageListener = null;
+
+  document.title = 'Mailsink';
+  if (window.fluid)
+    window.fluid.dockBadge = '';
+}
+
 function squelch(e) {
   e.preventDefault();
 }
@@ -52,6 +72,11 @@ function drawMessage(i, message) {
       });
 
   $('ul#messages').append(row);
+
+  if (messageListener) {
+    unreadMessages++;
+    messageListener();
+  }
 }
 
 function poller() {
@@ -84,6 +109,9 @@ function initMessageList(messages) {
 $(document).ready(function() {
   $('div#splitter').bind('mousedown', startResize);
   killSelection('ul#messages');
+
+  $(window).bind('blur', appBlur)
+           .bind('focus', appFocus);
 
   $.ajax({
     url: '/messages.json',
