@@ -112,13 +112,53 @@ div#viewer {
     left: 379px;
 }
 
+
+dl#viewmeta {
+    margin: 6px 0px;
+    overflow: hidden;
+    width: 99%;
+}
+
+
+dl#viewmeta dt {
+    color: #666;
+    clear: left;
+    float: left;
+    padding: 3px;
+    text-align: right;
+    width: 10%;
+}
+
+dl#viewmeta dd {
+    float: left;
+    margin: 0;
+    overflow: hidden;
+    padding: 3px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 85%;
+}
+
+dd#subject {
+    font-weight: bold;
+}
+
+div#viewformat {
+    float: right;
+    margin-right: 1%;
+}
+
 iframe#viewframe {
     border: 0;
     border-top: 2px solid #797979;
 
     position: absolute;
-    top: 180px;
+    top: 135px;
     width: 100%;
+}
+
+.viewpane {
+    display: none;
 }
 
 div#dragmask {

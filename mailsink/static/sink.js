@@ -69,9 +69,16 @@ function endResize(e) {
 }
 
 function adjustFrame() {
-  $('iframe#viewframe').height($(window).height() - 182);
+  $('iframe#viewframe').height($(window).height() - 137);
 }
 
+function viewMessage(message) {
+    $('dd#from').text(message.from);
+    $('dd#subject').text(message.subject);
+    $('dd#date').text(message.timestamp);
+    $('dd#to').text(message.to);
+    $('.viewpane').show();
+}
 
 function drawMessage(i, message) {
   row = $(document.createElement('li'));
@@ -82,9 +89,7 @@ function drawMessage(i, message) {
       {
         $('ul#messages li.selected').removeClass('selected');
         $(this).addClass('selected');
-
-        /*$('div#viewer').empty().append($('<pre>').text(message.body));*/
-        console.log(message);
+        viewMessage(message);
       });
 
   $('ul#messages').append(row);

@@ -12,7 +12,18 @@
     <ul id="messages"></ul>
     <div id="splitter"></div>
     <div id="viewer">
-      <iframe id="viewframe"></iframe>
+      <dl id="viewmeta" class="viewpane">
+        <dt>From:</dt> <dd id="from"></dd>
+        <dt>Subject:</dt> <dd id="subject"></dd>
+        <dt>Date:</dt> <dd id="date"></dd>
+        <dt>To:</dt> <dd id="to"></dd>
+      </dl>
+
+      <div id="viewformat" class="viewpane">
+        <label>View: <select id="format"></select></label>
+      </div>
+
+      <iframe id="viewframe" class="viewpane"></iframe>
     </div>
     <div id="dragmask"></div>
   </body>
