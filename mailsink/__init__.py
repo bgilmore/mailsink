@@ -1,34 +1,7 @@
-import optparse
-import sys
-
-from mailsink import server, webui
-from twisted.internet import reactor
-from twisted.python import log
-from twisted.web import server as webserver
+# Copyright (C) 2010 Brandon Gilmore. All rights reserved.
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file.
 
 version_info = (0, 0, 1)
 __version__  = ".".join(map(str, version_info))
-
-def run():
-    parser = optparse.OptionParser(usage="usage: %prog [options]",
-                                   version="%prog " + __version__)
-
-    parser.add_option("-s", "--smtp-port", dest="smtp_port", default=8025, type="int",
-                      help="port to use for SMTP server (default: %default)")
-    parser.add_option("-w", "--web-port", dest="web_port", default=8080, type="int",
-                      help="port to use for Web UI (default: %default)")
-
-    opt, arg = parser.parse_args()
-    if len(arg) > 0:
-        parser.error("incorrect number of arguments")
-
-    sink = server.Sink()
-    site = webserver.Site(webui.SinkViewer(sink))
-    site.requestFactory    = webui.TidyRequest
-    site.displayTracebacks = False
-
-    log.startLogging(sys.stdout)
-    reactor.listenTCP(opt.smtp_port, server.Faucet(sink))
-    reactor.listenTCP(opt.web_port, site)
-    reactor.run()
 
