@@ -13,7 +13,12 @@ setup(
 
     platforms = "any",
     packages = [ "mailsink" ],
+    install_requires = [
+        "twisted >= 8.2.0"
+    ],
 
+    include_package_data = True,
+    zip_safe = True,
     entry_points = {
         "console_scripts": [ "mailsinkd = mailsink:run" ]
     },
