@@ -1,6 +1,22 @@
 var unreadMessages  = 0;
 var messageListener = null;
 
+jQuery.fn.extend({
+  killSelection: function() {
+    $(this).attr('selectable', false)
+           .css('user-select', 'none')
+           .css('-moz-user-select', 'none')
+           .css('-webkit-user-select', 'none');
+  },
+
+  restoreSelection: function() {
+    $(this).attr('selectable', true)
+           .css('user-select', 'text')
+           .css('-moz-user-select', 'text')
+           .css('-webkit-user-select', 'text');
+  }
+});
+
 function appBlur() {
   messageListener = function() {
     document.title = 'Mailsink (' + unreadMessages + ' new messages)';
@@ -22,20 +38,6 @@ function squelch(e) {
   e.preventDefault();
 }
 
-function killSelection(element) {
-  $(element).attr('selectable', false)
-            .css('user-select', 'none')
-            .css('-moz-user-select', 'none')
-            .css('-webkit-user-select', 'none');
-}
-
-function restoreSelection(element) {
-  $(element).attr('selectable', true)
-            .css('user-select', 'text')
-            .css('-moz-user-select', 'text')
-            .css('-webkit-user-select', 'text');
-}
-
 function doResize(e) {
   w   = $(document).width();
   pos = Math.max(0.25 * w, Math.min(0.50 * w, e.pageX));
@@ -45,16 +47,25 @@ function doResize(e) {
   $('div#viewer').css('left', pos + 3);
 }
 
-function endResize(e) {
-  restoreSelection('div#viewer');
-  $(document).unbind('mousemove', doResize)
-             .unbind('mouseup', endResize);
-}
 
 function startResize(e) {
-  killSelection('div#viewer');
+  $('div#viewer').killSelection();
+  $('div#dragmask').show();
+
   $(document).bind('mousemove', doResize)
-             .bind('mouseup', endResize);
+             .bind('mouseup', endResize)
+             .bind('dragstart', squelch)
+             .bind('dragstop', squelch);
+}
+
+function endResize(e) {
+  $('div#viewer').restoreSelection();
+  $('div#dragmask').hide();
+
+  $(document).unbind('mousemove', doResize)
+             .unbind('mouseup', endResize)
+             .unbind('dragstart', squelch)
+             .unbind('dragstop', squelch);
 }
 
 
@@ -68,7 +79,8 @@ function drawMessage(i, message) {
         $('ul#messages li.selected').removeClass('selected');
         $(this).addClass('selected');
 
-        $('div#viewer').empty().append($('<pre>').text(message.body));
+        /*$('div#viewer').empty().append($('<pre>').text(message.body));*/
+        console.log(message);
       });
 
   $('ul#messages').append(row);
@@ -107,8 +119,8 @@ function initMessageList(messages) {
 
 
 $(document).ready(function() {
+  $('ul#messages').killSelection();
   $('div#splitter').bind('mousedown', startResize);
-  killSelection('ul#messages');
 
   $(window).bind('blur', appBlur)
            .bind('focus', appFocus);
