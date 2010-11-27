@@ -2,6 +2,7 @@ from pkg_resources import resource_filename
 from posixpath import normpath as normalize
 
 from twisted.internet import defer, reactor
+from twisted.python import log
 from twisted.web import resource, server, static
 
 try:
@@ -30,6 +31,29 @@ class Error(resource.Resource):
         request.setHeader("Content-Type", "text/html")
         return "<html><body><h1>%d %s</h1></body></html>" % (self._code, self._message,)
 
+class Message(resource.Resource):
+
+    def __init__(self, root):
+        resource.Resource.__init__(self)
+        self._root = root
+
+    def getChild(self, name, request):
+        if name in self._root._sink:
+            return MessageComponent(self._root._sink[name])
+        else:
+            return Error(410, "Message no longer available")
+
+class MessageComponent(resource.Resource):
+    isLeaf = True
+
+    def __init__(self, message):
+        resource.Resource.__init__(self)
+        self.message = message
+
+    def render_GET(self, request):
+        part = self.message.parts[request.postpath[0]]
+        request.setHeader("Content-Type", part.get("type", "text/plain"))
+        return part['payload']
 
 class SinkContents(resource.Resource):
     isLeaf = True
@@ -40,7 +64,7 @@ class SinkContents(resource.Resource):
 
     def render_GET(self, request):
         request.setHeader("Content-Type", "application/json")
-        return json.dumps(self._root._sink.contents())
+        return json.dumps([message.meta for message in self._root._sink.contents()])
 
 
 class SinkStreamer(resource.Resource):
@@ -60,7 +84,7 @@ class SinkStreamer(resource.Resource):
 
     def _update(self, message, request):
         # send activity to client
-        request.write(json.dumps(message))
+        request.write(json.dumps(message.meta))
         request.finish()
 
     def _timed_out(self, request):
@@ -94,6 +118,7 @@ class SinkViewer(resource.Resource):
     _dispatch = {
         'messages.json': SinkContents,
         'updates.json': SinkStreamer,
+        'message': Message,
     }
 
     def __init__(self, sink):

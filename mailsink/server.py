@@ -12,8 +12,9 @@ class Sink(object):
     """ specialized ring-buffer for message storage """
 
     def __init__(self, size=10):
-        self._store = [None for i in range(size)]
-        self._subs  = set()
+        self._msg_ids  = [None for i in range(size)]
+        self._store    = {}
+        self._subs     = set()
 
     def subscribe(self, d):
         self._subs.add(d)
@@ -22,8 +23,12 @@ class Sink(object):
         self._subs.discard(d)
 
     def add(self, item):
-        self._store.pop()
-        self._store.insert(0, item)
+        self._store[item.id] = item
+        expired = self._msg_ids.pop()
+        self._msg_ids.insert(0, item.id)
+
+        if expired is not None:
+            del self._store[expired]
 
         # notify subscribers
         for d in self._subs:
@@ -32,7 +37,15 @@ class Sink(object):
         self._subs.clear()
 
     def contents(self):
-        return [message for message in reversed(self._store) if message is not None]
+        return [self._store[msgid] for msgid in reversed(self._msg_ids) if msgid is not None]
+
+    def __contains__(self, key):
+        log.msg(self._store.keys())
+        log.msg(self._msg_ids)
+        return key in self._store
+
+    def __getitem__(self, key):
+        return self._store[key]
 
     def __iter__(self):
         for i in xrange(len(self._store)):

@@ -75,14 +75,32 @@ function adjustFrame() {
 function viewMessage(message) {
     $('dd#from').text(message.from);
     $('dd#subject').text(message.subject);
-    $('dd#date').text(message.timestamp);
+    $('dd#date').text(message.long_time);
     $('dd#to').text(message.to);
+
+    /* clear select box for repop */
+    $('select#part').children().remove().end();
+
+    $(message.parts).each(function(idx, val) {
+        $('<option>').val(val[0])
+                     .text(val[1])
+                     .appendTo($('select#part'));
+    });
+
+    /* clear old change callback and attach the new one */
+    $('select#part').unbind('change')
+                    .bind('change', function() {
+        $('iframe#viewframe').attr('src', '/message/' + message.id + '/' + $(this).val());
+        console.log('/message/' + message.id + '/' + $(this).val());
+    });
+
+
     $('.viewpane').show();
 }
 
 function drawMessage(i, message) {
   row = $(document.createElement('li'));
-  row.append("<small>" + message.timestamp + "</small>")
+  row.append("<small>" + message.short_time + "</small>")
      .append("<address>" + message.from + "</address>")
      .append("<cite>" + message.subject + "</cite>")
      .bind('click', function()
@@ -127,6 +145,8 @@ function initMessageList(messages) {
 }
 
 $(document).ready(function() {
+  $('iframe#viewframe').attr('src', 'javascript:void(0);');
+
   $('ul#messages').killSelection();
   $('div#splitter').bind('mousedown', startResize);
 
