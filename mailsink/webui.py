@@ -2,7 +2,6 @@ from pkg_resources import resource_filename
 from posixpath import normpath as normalize
 
 from twisted.internet import defer, reactor
-from twisted.python import log
 from twisted.web import resource, server, static
 
 try:
@@ -52,8 +51,19 @@ class MessageComponent(resource.Resource):
 
     def render_GET(self, request):
         part = self.message.parts[request.postpath[0]]
-        request.setHeader("Content-Type", part.get("type", "text/plain"))
-        return part['payload']
+        type = part.get("type", "text/plain")
+        request.setHeader("Content-Type", type)
+
+        if 'html' in type:
+            body = part['payload']
+            for pid, p in self.message.parts.items():
+                if p['cid'] is not None:
+                    old_uri = 'cid:' + p['cid'][1:-1]
+                    new_uri = '/message/%s/%s' % (self.message.id, pid)
+                    body = body.replace(old_uri, new_uri)
+            return body
+        else:
+            return part['payload']
 
 class SinkContents(resource.Resource):
     isLeaf = True

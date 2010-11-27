@@ -40,8 +40,6 @@ class Sink(object):
         return [self._store[msgid] for msgid in reversed(self._msg_ids) if msgid is not None]
 
     def __contains__(self, key):
-        log.msg(self._store.keys())
-        log.msg(self._msg_ids)
         return key in self._store
 
     def __getitem__(self, key):

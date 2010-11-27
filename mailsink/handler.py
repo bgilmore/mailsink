@@ -66,7 +66,7 @@ class Message:
                 'cid': part['Content-Id'],
                 'name': part.get_filename(),
                 'type': part.get_content_type(),
-                'payload': part.get_payload(),
+                'payload': part.get_payload(decode=True),
             }
 
             if part['name'] is not None:
