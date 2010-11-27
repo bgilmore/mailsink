@@ -33,7 +33,7 @@ setup(
     include_package_data = True,
     zip_safe = True,
     entry_points = {
-        "console_scripts": [ "mailsinkd = mailsink:run" ]
+        "console_scripts": [ "mailsinkd = mailsink.server:run" ]
     },
 )
 

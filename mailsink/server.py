@@ -1,6 +1,12 @@
-from twisted.internet import protocol
+import optparse
+import sys
+
+from twisted.internet import protocol, reactor
 from twisted.mail.smtp import ESMTP
-from mailsink.handler import MessageHandlerFactory
+from twisted.python import log
+from twisted.web import server as webserver
+
+from mailsink import handler, webui, __version__
 
 class Sink(object):
     """ specialized ring-buffer for message storage """
@@ -42,6 +48,29 @@ class Faucet(protocol.ServerFactory):
 
     def buildProtocol(self, addr):
         p = protocol.ServerFactory.buildProtocol(self, addr)
-        p.deliveryFactory = MessageHandlerFactory(self._sink)
+        p.deliveryFactory = handler.MessageHandlerFactory(self._sink)
         return p
+
+def run():
+    parser = optparse.OptionParser(usage="usage: %prog [options]",
+                                   version="%prog " + __version__)
+
+    parser.add_option("-s", "--smtp-port", dest="smtp_port", default=8025, type="int",
+                      help="port to use for SMTP server (default: %default)")
+    parser.add_option("-w", "--web-port", dest="web_port", default=8080, type="int",
+                      help="port to use for Web UI (default: %default)")
+
+    opt, arg = parser.parse_args()
+    if len(arg) > 0:
+        parser.error("incorrect number of arguments")
+
+    sink = Sink()
+    site = webserver.Site(webui.SinkViewer(sink))
+    site.requestFactory    = webui.TidyRequest
+    site.displayTracebacks = False
+
+    log.startLogging(sys.stdout)
+    reactor.listenTCP(opt.smtp_port, Faucet(sink))
+    reactor.listenTCP(opt.web_port, site)
+    reactor.run()
 
