@@ -1,7 +1,9 @@
 import optparse
+import sys
 
 from mailsink import server, webui
 from twisted.internet import reactor
+from twisted.python import log
 from twisted.web import server as webserver
 
 version_info = (0, 0, 1)
@@ -21,8 +23,12 @@ def run():
         parser.error("incorrect number of arguments")
 
     sink = server.Sink()
+    site = webserver.Site(webui.SinkViewer(sink))
+    site.requestFactory    = webui.TidyRequest
+    site.displayTracebacks = False
 
+    log.startLogging(sys.stdout)
     reactor.listenTCP(opt.smtp_port, server.Faucet(sink))
-    reactor.listenTCP(opt.web_port, webserver.Site(webui.SinkViewer(sink)))
+    reactor.listenTCP(opt.web_port, site)
     reactor.run()
 
