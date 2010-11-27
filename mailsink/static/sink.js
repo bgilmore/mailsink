@@ -68,6 +68,10 @@ function endResize(e) {
              .unbind('dragstop', squelch);
 }
 
+function adjustFrame() {
+  $('iframe#viewframe').height($(window).height() - 182);
+}
+
 
 function drawMessage(i, message) {
   row = $(document.createElement('li'));
@@ -117,13 +121,15 @@ function initMessageList(messages) {
   window.setTimeout(poller, 500);
 }
 
-
 $(document).ready(function() {
   $('ul#messages').killSelection();
   $('div#splitter').bind('mousedown', startResize);
 
   $(window).bind('blur', appBlur)
-           .bind('focus', appFocus);
+           .bind('focus', appFocus)
+           .bind('resize', adjustFrame);
+
+  adjustFrame();
 
   $.ajax({
     url: '/messages.json',
