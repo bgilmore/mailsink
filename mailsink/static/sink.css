@@ -143,6 +143,7 @@ dd#subject {
 }
 
 div#viewpart {
+    background: #eee;
     position: absolute;
     top: 6px;
     right: 6px;
