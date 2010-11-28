@@ -68,7 +68,7 @@ function endResize(e) {
 }
 
 function adjustFrame() {
-  $('iframe#viewframe').height($(window).height() - 137);
+  $('iframe#viewframe').height($(window).height() - $('dl#viewmeta').outerHeight());
 }
 
 function viewMessage(message) {
@@ -112,7 +112,8 @@ function viewMessage(message) {
 
   $('select#part').change();
 
-  $('.viewpane').show();
+  $('.viewpane').removeClass('viewpane');
+  adjustFrame(); /* re-fire in case a long field forces a line wrap */
 }
 
 function drawMessage(i, message) {

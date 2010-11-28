@@ -112,13 +112,12 @@ div#viewer {
     left: 379px;
 }
 
-
 dl#viewmeta {
-    margin: 6px 0px;
+    margin: 0;
+    padding: 6px 0px;
     overflow: hidden;
     width: 99%;
 }
-
 
 dl#viewmeta dt {
     color: #666;
@@ -126,7 +125,7 @@ dl#viewmeta dt {
     float: left;
     padding: 3px;
     text-align: right;
-    width: 10%;
+    width: 75px;
 }
 
 dl#viewmeta dd {
@@ -144,22 +143,29 @@ dd#subject {
 }
 
 div#viewpart {
-    float: right;
-    margin-right: 1%;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1000;
+}
+
+div#viewpart label {
+    font-size: 0.90em;
 }
 
 iframe#viewframe {
     background: #fff;
     border: 0;
-    border-top: 2px solid #797979;
+    border-top: 1px solid #797979;
+    display: block;
 
     position: absolute;
-    top: 135px;
+    bottom: 0;
     width: 100%;
 }
 
 .viewpane {
-    display: none;
+    display: none !important;
 }
 
 div#dragmask {
