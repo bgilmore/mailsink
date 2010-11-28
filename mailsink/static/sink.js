@@ -47,7 +47,6 @@ function doResize(e) {
   $('div#viewer').css('left', pos + 3);
 }
 
-
 function startResize(e) {
   $('div#viewer').killSelection();
   $('div#dragmask').show();
@@ -73,29 +72,47 @@ function adjustFrame() {
 }
 
 function viewMessage(message) {
-    $('dd#from').text(message.from);
-    $('dd#subject').text(message.subject);
-    $('dd#date').text(message.long_time);
-    $('dd#to').text(message.to);
+  var partId = null;
 
-    /* clear select box for repop */
-    $('select#part').children().remove().end();
+  $('dd#from').text(message.from);
+  $('dd#subject').text(message.subject);
+  $('dd#date').text(message.long_time);
+  $('dd#to').text(message.to);
 
-    $(message.parts).each(function(idx, val) {
-        $('<option>').val(val[0])
-                     .text(val[1])
-                     .appendTo($('select#part'));
-    });
+  /* clear select box for repop */
+  $('select#part').children().remove().end();
 
-    /* clear old change callback and attach the new one */
-    $('select#part').unbind('change')
-                    .bind('change', function() {
-        $('iframe#viewframe').attr('src', '/message/' + message.id + '/' + $(this).val());
-        console.log('/message/' + message.id + '/' + $(this).val());
-    });
+  $(message.parts).each(function(idx, val) {
+      $('<option>').val(val[0])
+                   .text(val[1])
+                   .appendTo($('select#part'));
+  });
 
+  /* clear old change callback and attach the new one */
+  $('select#part').unbind('change')
+                  .bind('change', function() {
+      $('iframe#viewframe').attr('src', '/message/' + message.id + '/' + $(this).val());
+  });
 
-    $('.viewpane').show();
+  /* select the first text/html or text/plain part in the list */
+  $('select#part option').each(function(idx, val) {
+    if ($(this).text() == 'text/html') {
+      partId = $(this).val();
+      return false;
+    } else if ($(this).text() == 'text/plain') {
+      partId = $(this).val();
+    }
+  });
+
+  if (partId) {
+    $('select#part').val(partId);
+  } else {
+    $('select#part').val($('select#part option:first').val());
+  }
+
+  $('select#part').change();
+
+  $('.viewpane').show();
 }
 
 function drawMessage(i, message) {
