@@ -19,7 +19,7 @@ jQuery.fn.extend({
 
 function appBlur() {
   messageListener = function() {
-    document.title = 'Mailsink (' + unreadMessages + ' new messages)';
+    document.title = 'Mailsink (' + unreadMessages + ' new ' + (unreadMessages == 1 ? 'message' : 'messages') + ')';
     if (window.fluid)
       window.fluid.dockBadge = String(unreadMessages);
   }
